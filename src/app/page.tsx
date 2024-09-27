@@ -12,7 +12,7 @@ export default function Home() {
     address: CROWDFUNDING_FACTORY,
   });
 
-  const { data, isPending } = useReadContract({
+  const { data: campaigns, isPending } = useReadContract({
     contract,
     method:
       "function getAllCampaigns() view returns ((address campaignAddress, address owner, string name, uint256 creationTime)[])",
