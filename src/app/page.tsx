@@ -5,7 +5,7 @@ import { client } from "./client";
 import { baseSepolia } from "thirdweb/chains";
 import { CROWDFUNDING_FACTORY } from "./constants/contracts";
 import { useReadContract } from "thirdweb/react";
-
+import CampaignCard from "./components/CampaignCard";
 export default function Home() {
   const contract = getContract({
     client: client,
@@ -30,9 +30,10 @@ export default function Home() {
           campaigns &&
           (campaigns.length > 0 ? (
             campaigns.map((campaign) => (
-              <div key={campaign.campaignAddress}>
-                <p>Campaign</p>
-              </div>
+              <CampaignCard
+                key={campaign.campaignAddress}
+                campaignAddress={campaign.campaignAddress}
+              />
             ))
           ) : (
             <p>No campaigns found</p>
