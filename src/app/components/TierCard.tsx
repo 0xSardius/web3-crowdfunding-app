@@ -28,6 +28,7 @@ export default function TierCard({ tier, index, contract }: TierCardProps) {
           Total Backers: {tier.backers.toString()}
         </p>
         <TransactionButton
+          className="m-4 bg-[#2563EB] text-white p-[0.5rem_1rem] rounded-[0.375rem] cursor-pointer"
           transaction={() =>
             prepareContractCall({
               contract: contract,
@@ -35,6 +36,7 @@ export default function TierCard({ tier, index, contract }: TierCardProps) {
               params: [BigInt(index)],
             })
           }
+          onTransactionConfirmed={async () => alert("Funded Successfully!")}
         >
           Select
         </TransactionButton>
