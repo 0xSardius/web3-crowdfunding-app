@@ -1,13 +1,19 @@
 "use client";
 
+import { useState } from "react";
 import { client } from "@/app/client";
 import { useParams } from "next/navigation";
 import { getContract } from "thirdweb";
-import { useReadContract } from "thirdweb/react";
+import { useReadContract, useActiveAccount } from "thirdweb/react";
 import { baseSepolia } from "thirdweb/chains";
+import TierCard from "@/app/components/TierCard";
 
 export default function CampaignPage() {
   const { campaignAddress } = useParams();
+  const [isEditing, setIsEditing] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const account = useActiveAccount();
+
   const contract = getContract({
     client: client,
     chain: baseSepolia,
@@ -84,6 +90,16 @@ export default function CampaignPage() {
         {!isLoadingName && (
           <p className="text-4xl font-semi-bold">{campaignName}</p>
         )}
+        {owner === account?.address && (
+          <div className="flex flex-row">
+            <button
+              className="px-4 py-2 bg-blue-600 text-white rounded-md"
+              onClick={() => setIsEditing(!isEditing)}
+            >
+              {isEditing ? "Done" : "Edit"}
+            </button>
+          </div>
+        )}
       </div>
       <div className="my-4">
         <p className="text-lg font-semibold">Description</p>
@@ -114,15 +130,22 @@ export default function CampaignPage() {
       )}
 
       <div>
-        <p className="text-lg font-semibold">Tiers</p>
-        <div>
-          {tiers?.map((tier) => (
-            <div key={tier.name}>
-              <p>{tier.name}</p>
-              <p>{tier.amount}</p>
-              <p>{tier.backers}</p>
-            </div>
-          ))}
+        <p className="text-lg font-semibold">Tiers:</p>
+        <div className="grid grid-cols-3 gap-4">
+          {isLoadingTiers ? (
+            <p>Loading...</p>
+          ) : tiers && tiers.length > 0 ? (
+            tiers.map((tier, index) => (
+              <TierCard
+                key={tier.name}
+                tier={tier}
+                index={index}
+                contract={contract}
+              />
+            ))
+          ) : (
+            <p>No tiers found</p>
+          )}
         </div>
       </div>
     </div>

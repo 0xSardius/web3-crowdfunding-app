@@ -1,0 +1,44 @@
+import { ThirdwebContract } from "thirdweb/contract";
+import { TransactionButton } from "thirdweb/react";
+import { prepareContractCall } from "thirdweb";
+
+type Tier = {
+  name: string;
+  amount: bigint;
+  backers: bigint;
+};
+
+type TierCardProps = {
+  tier: Tier;
+  index: number;
+  contract: ThirdwebContract;
+};
+
+export default function TierCard({ tier, index, contract }: TierCardProps) {
+  return (
+    <div className="max-w-sm flex flex-col justify-between p-6 bg-white border border-slate-100 rounded-lg shadow">
+      <div>
+        <div className="flex flex-row justify-between items-center">
+          <p className="text-2xl font-semibold">{tier.name}</p>
+          <p className="text-xl font-semibold">${tier.amount.toString()}</p>
+        </div>
+      </div>
+      <div className="flex flex-row justify-between items-end">
+        <p className="text-xs font-semibold">
+          Total Backers: {tier.backers.toString()}
+        </p>
+        <TransactionButton
+          transaction={() =>
+            prepareContractCall({
+              contract: contract,
+              method: "function fund(uint256 _tierIndex) payable",
+              params: [BigInt(index)],
+            })
+          }
+        >
+          Select
+        </TransactionButton>
+      </div>
+    </div>
+  );
+}
